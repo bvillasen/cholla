@@ -18,23 +18,21 @@ void Grid3D::Compute_Lya_Statistics( ){
   chprintf( "Computing Lya Absorbiton along skewers \n");
   for ( axis=0; axis<3; axis++ ){
   
-    if ( axis == 0 ) n_skewers = Analysis.n_skewers_local_x;
-    if ( axis == 1 ) n_skewers = Analysis.n_skewers_local_y;
-    if ( axis == 2 ) n_skewers = Analysis.n_skewers_local_z;
-  
     if ( axis == 0 ) chprintf( " Computing Along X axis: ");
     if ( axis == 1 ) chprintf( " Computing Along Y axis: ");
     if ( axis == 2 ) chprintf( " Computing Along Z axis: ");
   
-  
     Populate_Lya_Skewers_Local( axis );
     Analysis.Initialize_Lya_Statistics_Measurements( axis );
     Analysis.Transfer_Skewers_Data( axis );
+    
 
-    for ( int skewer_id=0; skewer_id< n_skewers; skewer_id++ ){
-      Compute_Transmitted_Flux_Skewer( skewer_id, axis );
-      Analysis.Compute_Lya_Mean_Flux_Skewer( skewer_id, axis );
-    }
+    #ifdef GPU_LYA_FLUX
+    Compute_Transmitted_Flux_Skewers_GPU( axis );
+    #else
+    Compute_Transmitted_Flux_Skewers_CPU( axis );  
+    #endif
+    
     Analysis.Reduce_Lya_Mean_Flux_Axis( axis );
     
     #ifdef OUTPUT_SKEWERS
@@ -44,7 +42,6 @@ void Grid3D::Compute_Lya_Statistics( ){
   }  
   Analysis.Reduce_Lya_Mean_Flux_Global();
 
-  // if( Analysis.Flux_mean_HI > 1e-10 ){
   
   // Compute the Flux Power Spectrum after computing the mean transmitted flux 
   for ( axis=0; axis<3; axis++ ){
@@ -69,9 +66,6 @@ void Grid3D::Compute_Lya_Statistics( ){
   Analysis.Reduce_Power_Spectrum_Global();
   Analysis.Computed_Flux_Power_Spectrum = 1;
 
-  // } else{
-  //   Analysis.Computed_Flux_Power_Spectrum = 0;
-  // }
 
   time_end = get_time();
   time_elapsed = (time_end - time_start)*1000;

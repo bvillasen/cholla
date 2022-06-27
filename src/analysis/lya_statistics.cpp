@@ -865,6 +865,21 @@ void Analysis_Module::Initialize_Lya_Statistics_Measurements( int axis ){
 
 }
 
+void Grid3D::Compute_Transmitted_Flux_Skewers_CPU( int axis ){
+  
+  int n_skewers;
+  
+  if ( axis == 0 ) n_skewers = Analysis.n_skewers_local_x;
+  if ( axis == 1 ) n_skewers = Analysis.n_skewers_local_y;
+  if ( axis == 2 ) n_skewers = Analysis.n_skewers_local_z;
+  
+  for ( int skewer_id=0; skewer_id< n_skewers; skewer_id++ ){
+    Compute_Transmitted_Flux_Skewer( skewer_id, axis );
+    Analysis.Compute_Lya_Mean_Flux_Skewer( skewer_id, axis );
+  }
+}
+
+
 void Grid3D::Compute_Transmitted_Flux_Skewer( int skewer_id, int axis ){
   
   int n_los_full, n_los_total, n_ghost;
@@ -1705,6 +1720,23 @@ void Analysis_Module::Initialize_Lya_Statistics( struct parameters *P ){
     full_vel_Hubble_x            = (Real *) malloc(n_los_full_x*sizeof(Real));
     skewers_transmitted_flux_HI_x   = (Real *) malloc(n_skewers_local_x*nx_total*sizeof(Real));
     skewers_transmitted_flux_HeII_x = (Real *) malloc(n_skewers_local_x*nx_total*sizeof(Real));
+    
+    #ifdef GPU_LYA_FLUX
+    int size_skewers_field_x = n_skewers_local_x * nx_total;
+    int size_skewers_field_full_x = n_skewers_local_x * n_los_full_x;
+  
+    host_skewers_density_x          = (Real *) malloc(size_skewers_field_full_x*sizeof(Real));
+    host_skewers_temperature_x      = (Real *) malloc(size_skewers_field_full_x*sizeof(Real));
+    host_skewers_velocity_x         = (Real *) malloc(size_skewers_field_full_x*sizeof(Real));
+    
+    CudaSafeCall(cudaMalloc( (void**)&dev_skewers_density_x,          size_skewers_field_full_x*sizeof(Real)));
+    CudaSafeCall(cudaMalloc( (void**)&dev_skewers_temperature_x,      size_skewers_field_full_x*sizeof(Real)));
+    CudaSafeCall(cudaMalloc( (void**)&dev_skewers_velocity_x,         size_skewers_field_full_x*sizeof(Real)));
+    CudaSafeCall(cudaMalloc( (void**)&dev_skewers_optical_depth_x,    size_skewers_field_full_x*sizeof(Real)));
+    CudaSafeCall(cudaMalloc( (void**)&dev_skewers_transmitted_flux_x, size_skewers_field_x*sizeof(Real)));
+    CudaCheckError();  
+    #endif //GPU_LYA_FLUX
+    
     #if OUTPUT_SKEWERS
     skewers_density_root_x    = (Real *) malloc(n_skewers_local_x*nx_total*sizeof(Real));
     #endif
@@ -1732,6 +1764,22 @@ void Analysis_Module::Initialize_Lya_Statistics( struct parameters *P ){
     full_vel_Hubble_y            = (Real *) malloc(n_los_full_y*sizeof(Real));
     skewers_transmitted_flux_HI_y   = (Real *) malloc(n_skewers_local_y*ny_total*sizeof(Real));
     skewers_transmitted_flux_HeII_y = (Real *) malloc(n_skewers_local_y*ny_total*sizeof(Real));
+    
+    #ifdef GPU_LYA_FLUX
+    int size_skewers_field_y = n_skewers_local_y * ny_total;
+    int size_skewers_field_full_y = n_skewers_local_y * n_los_full_y;
+    
+    host_skewers_density_y          = (Real *) malloc(size_skewers_field_full_y*sizeof(Real));
+    host_skewers_temperature_y      = (Real *) malloc(size_skewers_field_full_y*sizeof(Real));
+    host_skewers_velocity_y         = (Real *) malloc(size_skewers_field_full_y*sizeof(Real));
+    
+    cudaMalloc( (void**)&dev_skewers_density_y,          size_skewers_field_full_y*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_temperature_y,      size_skewers_field_full_y*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_velocity_y,         size_skewers_field_full_y*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_optical_depth_y,    size_skewers_field_full_y*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_transmitted_flux_y, size_skewers_field_y*sizeof(Real));
+    #endif //GPU_LYA_FLUX
+    
     #if OUTPUT_SKEWERS
     skewers_density_root_y    = (Real *) malloc(n_skewers_local_y*ny_total*sizeof(Real));
     #endif
@@ -1759,6 +1807,22 @@ void Analysis_Module::Initialize_Lya_Statistics( struct parameters *P ){
     full_vel_Hubble_z            = (Real *) malloc(n_los_full_z*sizeof(Real));
     skewers_transmitted_flux_HI_z   = (Real *) malloc(n_skewers_local_z*nz_total*sizeof(Real));
     skewers_transmitted_flux_HeII_z = (Real *) malloc(n_skewers_local_z*nz_total*sizeof(Real));
+    
+    #ifdef GPU_LYA_FLUX
+    int size_skewers_field_z = n_skewers_local_z * nz_total;
+    int size_skewers_field_full_z = n_skewers_local_z * n_los_full_z;
+    
+    host_skewers_density_z          = (Real *) malloc(size_skewers_field_full_z*sizeof(Real));
+    host_skewers_temperature_z      = (Real *) malloc(size_skewers_field_full_z*sizeof(Real));
+    host_skewers_velocity_z         = (Real *) malloc(size_skewers_field_full_z*sizeof(Real));
+    
+    cudaMalloc( (void**)&dev_skewers_density_z,          size_skewers_field_full_z*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_temperature_z,      size_skewers_field_full_z*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_velocity_z,         size_skewers_field_full_z*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_optical_depth_z,    size_skewers_field_full_z*sizeof(Real));
+    cudaMalloc( (void**)&dev_skewers_transmitted_flux_z, size_skewers_field_z*sizeof(Real));
+    #endif //GPU_LYA_FLUX
+    
     #if OUTPUT_SKEWERS
     skewers_density_root_z    = (Real *) malloc(n_skewers_local_z*nz_total*sizeof(Real));
     #endif

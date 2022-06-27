@@ -161,6 +161,42 @@ public:
   Real *skewers_transmitted_flux_HeII_y;
   Real *skewers_transmitted_flux_HeII_z;
   
+  #ifdef GPU_LYA_FLUX
+  
+  Real *host_skewers_density_x;
+  Real *host_skewers_density_y;
+  Real *host_skewers_density_z;
+  
+  Real *host_skewers_temperature_x;
+  Real *host_skewers_temperature_y;
+  Real *host_skewers_temperature_z;
+  
+  Real *host_skewers_velocity_x;
+  Real *host_skewers_velocity_y;
+  Real *host_skewers_velocity_z;
+  
+  Real *dev_skewers_density_x;
+  Real *dev_skewers_density_y;
+  Real *dev_skewers_density_z;
+  
+  Real *dev_skewers_temperature_x;
+  Real *dev_skewers_temperature_y;
+  Real *dev_skewers_temperature_z;
+  
+  Real *dev_skewers_velocity_x;
+  Real *dev_skewers_velocity_y;
+  Real *dev_skewers_velocity_z;
+
+  Real *dev_skewers_optical_depth_x;
+  Real *dev_skewers_optical_depth_y;
+  Real *dev_skewers_optical_depth_z;
+    
+  Real *dev_skewers_transmitted_flux_x;
+  Real *dev_skewers_transmitted_flux_y;
+  Real *dev_skewers_transmitted_flux_z;
+  
+  #endif //GPU_LYA_FLUX
+  
   #ifdef OUTPUT_SKEWERS
   
   Real *skewers_density_local_x;
@@ -321,7 +357,7 @@ public:
   void Clear_Power_Spectrum_Measurements( void );
   void Reduce_Power_Spectrum_Axis( int axis );
   void Reduce_Power_Spectrum_Global( );
-  void Transfer_Skewers_Global_Axis( int axis );
+  void Transfer_Skewers_Global_Axis( int axis );  
   #endif
 };
 

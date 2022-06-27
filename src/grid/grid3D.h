@@ -818,10 +818,15 @@ class Grid3D
 
   #ifdef LYA_STATISTICS
   void Populate_Lya_Skewers_Local( int axis );
+  void Compute_Transmitted_Flux_Skewers_CPU( int axis );
   void Compute_Transmitted_Flux_Skewer( int skewer_id, int axis );
   void Compute_Lya_Statistics( );
   void Compute_Flux_Power_Spectrum_Skewer( int skewer_id, int axis );
   void Initialize_Power_Spectrum_Measurements( int axis );
+  #ifdef GPU_LYA_FLUX
+  void Compute_Transmitted_Flux_Skewers_single_chem_GPU( int axis, int chem_type );
+  void Compute_Transmitted_Flux_Skewers_GPU( int axis );
+  #endif
   #ifdef OUTPUT_SKEWERS
   void Output_Skewers_File( struct parameters *P );
   void Write_Skewers_Header_HDF5( hid_t file_id );
