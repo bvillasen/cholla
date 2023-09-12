@@ -39,7 +39,7 @@ yu_bcnd=1
 zl_bcnd=1
 zu_bcnd=1
 # path to output directory
-indir=ics_1_z100/
+indir=ics_256_n1_z100/
 outdir=snapshot_files/
 # UVB photoionization and photoheating rates
 UVB_rates_file=uvb_rates_V22.txt

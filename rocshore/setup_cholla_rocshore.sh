@@ -9,7 +9,7 @@ source ${cholla_dir}/builds/setup.mi300.sh
 
 echo "Compiling Cholla Cosmology"
 cd $cholla_dir
-# make TYPE=cosmology -j
+make TYPE=cosmology -j
 executable="$(ls "${cholla_dir}/bin")"
 echo "Found executable: ${executable}"
 cd $rocshore_dir
@@ -31,3 +31,6 @@ if [ ! -e ${ics_dir} ]; then
 else
   echo "Found initial confitions directory: ${ics_dir}"
 fi
+
+#Create output dir
+mkdir snapshot_files
