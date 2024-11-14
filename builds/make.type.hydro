@@ -2,7 +2,7 @@
 
 DFLAGS    += -DMPI_CHOLLA
 DFLAGS    += -DPRECISION=2
-DFLAGS    += -DPLMC
+DFLAGS    += -DPPMP
 DFLAGS    += -DHLLC
 
 # Integrator
@@ -17,7 +17,7 @@ DFLAGS    += -DDENSITY_FLOOR
 DFLAGS    += -DTEMPERATURE_FLOOR
 
 # Solve the Gas Internal Energy usisng a Dual Energy Formalism
-#DFLAGS    += -DDE
+DFLAGS    += -DDE
 
 # Apply cooling on the GPU from precomputed tables
 #DFLAGS    += -DCOOLING_GPU
@@ -27,5 +27,5 @@ DFLAGS    += -DTEMPERATURE_FLOOR
 
 # Select output format
 # Can also add -DSLICES and -DPROJECTIONS
-OUTPUT    ?=  -DOUTPUT -DHDF5
+#OUTPUT    ?=  -DOUTPUT -DHDF5
 DFLAGS    += $(OUTPUT)

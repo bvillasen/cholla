@@ -1,0 +1,26 @@
+#-- make.host for Frontier at the OLCF with
+#-- Compiler and flags for different build type
+CC                = ${OMPI_DIR}/bin/mpicc
+CXX               = ${OMPI_DIR}/bin/mpicxx
+GPUCXX           ?= ${ROCM_PATH}/bin/hipcc
+
+CFLAGS_DEBUG      = -g -O0
+CFLAGS_OPTIMIZE   = -g -O2
+
+CXXFLAGS_DEBUG    = -g -O0 -std=c++17 -fPIE
+CXXFLAGS_OPTIMIZE = -Ofast -std=c++17 -fPIE
+
+GPUFLAGS          = -std=c++17 --offload-arch=gfx942 -Wall -Wno-unused-result -munsafe-fp-atomics -fPIE
+HIPCONFIG	        = $(shell hipconfig -C)
+
+#-- Library
+MPI_ROOT          = ${OMPI_DIR}
+HDF5_ROOT         = /home/bvillase/util/hdf5/1.14.4-2
+ROCM_PATH         = /opt/rocm-6.2.1
+
+OMP_NUM_THREADS   = 8
+CFLAGS_OPTIMIZE   +=  -I$(MPI_ROOT)/include
+CXXFLAGS_OPTIMIZE +=  -I$(MPI_ROOT)/include -I$(ROCM_PATH)/include
+
+#-- Use GPU-aware MPI
+MPI_GPU           = -DMPI_GPU
