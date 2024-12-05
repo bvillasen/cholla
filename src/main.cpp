@@ -34,6 +34,10 @@
 
 int main(int argc, char *argv[])
 {
+  #ifdef USE_ROCSTAR
+  rocStarInit();
+  #endif
+
   // timing variables
   double start_total, stop_total, start_step, stop_step;
 #ifdef CPU_TIME
@@ -377,6 +381,12 @@ int main(int argc, char *argv[])
     mhd::checkMagneticDivergence(G);
 #endif  // MHD
   }     /*end loop over timesteps*/
+
+
+  #ifdef USE_ROCSTAR
+  rocStarFinalize();
+  #endif
+
 
 #ifdef CPU_TIME
   // Print timing statistics

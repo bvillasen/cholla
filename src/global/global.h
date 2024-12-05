@@ -10,6 +10,10 @@
   #include <cstdint>
 #endif  // PARTICLES
 
+#ifdef USE_ROCSTAR
+#include "tools/e_smi_tool.h"
+#endif
+
 #if PRECISION == 1
   #ifndef TYPEDEF_DEFINED_REAL
 typedef float Real;

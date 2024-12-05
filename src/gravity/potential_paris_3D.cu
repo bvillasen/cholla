@@ -76,6 +76,10 @@ PotentialParis3D::~PotentialParis3D() { Reset(); }
 void PotentialParis3D::Get_Potential(const Real *const density, Real *const potential, const Real g, const Real offset,
                                      const Real a)
 {
+  #ifdef USE_ROCSTAR
+  rocStarStart("grav_potential");
+  #endif
+
   #ifdef COSMOLOGY
   const Real scale = Real(4) * M_PI * g / a;
   #else
@@ -114,6 +118,10 @@ void PotentialParis3D::Get_Potential(const Real *const density, Real *const pote
   GPU_Error_Check(cudaMemcpy(potential, db, potentialBytes_, cudaMemcpyDeviceToDevice));
   #else
   GPU_Error_Check(cudaMemcpy(potential, db, potentialBytes_, cudaMemcpyDeviceToHost));
+  #endif
+
+  #ifdef USE_ROCSTAR
+  rocStarStop();
   #endif
 }
 

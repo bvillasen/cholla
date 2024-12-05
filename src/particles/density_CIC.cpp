@@ -18,6 +18,10 @@
 // Get the particles Cloud-In-Cell interpolated density
 void Particles3D::Get_Density_CIC()
 {
+  #ifdef USE_ROCSTAR
+  rocStarStart("particles_density");
+  #endif
+
   #ifdef PARTICLES_CPU
     #ifdef PARALLEL_OMP
   Get_Density_CIC_OMP();
@@ -28,6 +32,10 @@ void Particles3D::Get_Density_CIC()
 
   #ifdef PARTICLES_GPU
   Get_Density_CIC_GPU();
+  #endif
+
+  #ifdef USE_ROCSTAR
+  rocStarStop();
   #endif
 }
 

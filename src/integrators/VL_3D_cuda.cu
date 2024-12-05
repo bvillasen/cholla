@@ -164,6 +164,9 @@ void VL_Algorithm_3D_CUDA(Real *d_conserved, Real *d_grav_potential, int nx, int
                      Q_Lz, Q_Rz, F_z, nx, ny, nz, n_ghost, gama, 2, n_fields);
   #endif  // ROE
   #ifdef HLLC
+  #ifdef USE_ROCSTAR
+  rocStarStart("hllc_fluxes");
+  #endif
   cuda_utilities::AutomaticLaunchParams static const hllc_launch_params(Calculate_HLLC_Fluxes_CUDA, n_cells);
   hipLaunchKernelGGL(Calculate_HLLC_Fluxes_CUDA, hllc_launch_params.numBlocks, hllc_launch_params.threadsPerBlock, 0, 0,
                      Q_Lx, Q_Rx, F_x, nx, ny, nz, n_ghost, gama, 0, n_fields);
@@ -171,6 +174,9 @@ void VL_Algorithm_3D_CUDA(Real *d_conserved, Real *d_grav_potential, int nx, int
                      Q_Ly, Q_Ry, F_y, nx, ny, nz, n_ghost, gama, 1, n_fields);
   hipLaunchKernelGGL(Calculate_HLLC_Fluxes_CUDA, hllc_launch_params.numBlocks, hllc_launch_params.threadsPerBlock, 0, 0,
                      Q_Lz, Q_Rz, F_z, nx, ny, nz, n_ghost, gama, 2, n_fields);
+  #ifdef USE_ROCSTAR
+  rocStarStop();
+  #endif
   #endif  // HLLC
   #ifdef HLL
   cuda_utilities::AutomaticLaunchParams static const hll_launch_params(Calculate_HLL_Fluxes_CUDA, n_cells);
@@ -246,6 +252,9 @@ void VL_Algorithm_3D_CUDA(Real *d_conserved, Real *d_grav_potential, int nx, int
                      dev_conserved_half, Q_Lz, Q_Rz, nx, ny, nz, dz, dt, gama, 2, n_fields);
   #endif  // PLMC
   #ifdef PPMP
+  #ifdef USE_ROCSTAR
+  rocStarStart("ppmp_reconstruction");
+  #endif
   cuda_utilities::AutomaticLaunchParams static const ppmp_launch_params(PPMP_cuda, n_cells);
   hipLaunchKernelGGL(PPMP_cuda, ppmp_launch_params.numBlocks, ppmp_launch_params.threadsPerBlock, 0, 0,
                      dev_conserved_half, Q_Lx, Q_Rx, nx, ny, nz, n_ghost, dx, dt, gama, 0, n_fields);
@@ -253,6 +262,9 @@ void VL_Algorithm_3D_CUDA(Real *d_conserved, Real *d_grav_potential, int nx, int
                      dev_conserved_half, Q_Ly, Q_Ry, nx, ny, nz, n_ghost, dy, dt, gama, 1, n_fields);
   hipLaunchKernelGGL(PPMP_cuda, ppmp_launch_params.numBlocks, ppmp_launch_params.threadsPerBlock, 0, 0,
                      dev_conserved_half, Q_Lz, Q_Rz, nx, ny, nz, n_ghost, dz, dt, gama, 2, n_fields);
+  #ifdef USE_ROCSTAR
+  rocStarStop();
+  #endif
   #endif  // PPMP
   #ifdef PPMC
   cuda_utilities::AutomaticLaunchParams static const ppmc_vl_launch_params(PPMC_VL, n_cells);
