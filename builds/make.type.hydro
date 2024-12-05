@@ -23,9 +23,13 @@ DFLAGS    += -DDE
 #DFLAGS    += -DCOOLING_GPU
 
 # Measure the Timing of the different stages
-#DFLAGS    += -DCPU_TIME
+DFLAGS    += -DCPU_TIME
 
 # Select output format
 # Can also add -DSLICES and -DPROJECTIONS
 #OUTPUT    ?=  -DOUTPUT -DHDF5
 DFLAGS    += $(OUTPUT)
+
+# Use rocStar
+# DFLAGS += -DUSE_ROCSTAR
+# DFLAGS += -DMAX_BUFFER_SIZE_MB
