@@ -4,7 +4,7 @@
 #   source ./setup.lockhart.cce.sh
 
 module load cray-python
-module load rocm/6.2.1
+module load rocm
 module load craype-accel-amd-gfx942
 module load cray-hdf5 cray-fftw
 module load libfabric
