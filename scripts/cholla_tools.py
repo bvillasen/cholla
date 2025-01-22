@@ -1,6 +1,6 @@
 
 
-def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name):
+def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name, simulation_time=1.0):
   print( "Generating cholla parameter file...")
   print( f"n_mpi: {n_mpi}")
   print( f"work_dir: {work_dir}")
@@ -30,7 +30,7 @@ def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name)
   Ly = Ly_base
   Lz = Lz_base
 
-  run_time = 1.0
+  run_time = simulation_time
 
   params_hydro=f'''#
 # Parameter File for the 3D Hydrodynamics.

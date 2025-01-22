@@ -109,7 +109,8 @@ print(f'use_omnistat: {use_omnistat}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
-tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name )
+simulation_time = 0.1
+tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name, simulation_time=simulation_time )
 
 
 set_env_command = f'''
@@ -126,9 +127,12 @@ echo "Finished app run. $(date)"
 '''
 
 start_omnistat= '''
+# data housing directory
+export OMNISTAT_PROMSERVER_DATADIR=/lustre/orion/${SLURM_JOB_ACCOUNT}/scratch/${USER}/omniwatch/${SLURM_JOB_ID}
+
 export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
 export OMNISTAT_WRAPPER=/autofs/nccs-svm1_sw/crusher/amdsw/omnistat/1.2.0/misc/omnistat-ornl
-${OMNISTAT_WRAPPER} usermode --start --interval 1
+${OMNISTAT_WRAPPER} usermode --start --interval 5
 '''
 
 stop_omnistat = '''
