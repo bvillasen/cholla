@@ -17,6 +17,9 @@ elif [[ "${CHOLLA_SYSTEM}" == "lockhart_mi300a" ]]; then
 elif [[ "${CHOLLA_SYSTEM}" == "pp_conductor" ]]; then
   AFFINITY="--mca pml ucx -x UCX_PROTO_ENABLE=n -x UCX_ROCM_COPY_LAT=2e-6 -x UCX_ROCM_IPC_MIN_ZCOPY=4096 ${CHOLLA_ROOT}/scripts/affinity_mi300a.sh"
   SRUN="${OMPI_PATH}/bin/mpirun"
+elif [[ "${CHOLLA_SYSTEM}" == "frontier" ]]; then
+  AFFINITY="--gpu-bind=closest"
+  SRUN="srun"
 fi  
 
 if [[ "${PROFILER}" == "rocprofv3_stats" ]]; then

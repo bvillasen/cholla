@@ -67,6 +67,11 @@ if system == 'lockhart_mi250x':
   slurm_partition = ""
   n_gpu_per_node = 8
   slurm_options = ''
+if system == 'frontier':
+  slurm_template = slurm_templates.frontier
+  slurm_partition = ""
+  n_gpu_per_node = 8
+  slurm_options = ''  
 else:   
   print(f'ERROR: System {system} is not supported.')
   exit(1)
