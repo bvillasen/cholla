@@ -17,6 +17,8 @@ CHOLLA_GPU_TYPE = os.getenv('CHOLLA_GPU_TYPE', None)
 n_hrs = 1
 n_threads_per_core = 1
 
+use_omnistat = False
+
 parser = argparse.ArgumentParser( description="Cholla SLURM script generator.")
 parser.add_argument('--system', dest='system', type=str, help='System for the run.', default=None )
 parser.add_argument('--type', dest='type', type=str, help='Problem type, for example hydro or particles', default='hydro' )
@@ -27,6 +29,7 @@ parser.add_argument('--use_nodes', dest='use_nodes', nargs='+', help='List of no
 parser.add_argument('--exclude_nodes', dest='exclude_nodes', nargs='+', help='List of nodes to exclude for the run.', default=None )
 parser.add_argument('--profiler', dest='profiler', type=str, help='Type of profiler to use', default=None )
 parser.add_argument('--power_cap', dest='power_cap', type=int, help='Set GPU power cap', default=None )
+parser.add_argument('--use_omnistat', dest='use_omnistat', type=bool, help='Use omnistat for the run', default=False )
 args = parser.parse_args()
 
 system = args.system
@@ -56,6 +59,7 @@ job_name = f'c-{p_type}_N{n_nodes}'
 use_nodes = args.use_nodes
 exclude_nodes = args.exclude_nodes
 power_cap = args.power_cap
+use_omnistat = args.use_omnistat
 
 if not os.path.isdir(work_dir): os.mkdir(work_dir)
 run_base_name = 'run'
@@ -70,7 +74,7 @@ if system == 'lockhart_mi250x':
   slurm_partition = ""
   n_gpu_per_node = 8
   slurm_options = ''
-if system == 'frontier':
+elif system == 'frontier':
   slurm_template = slurm_templates.frontier
   slurm_partition = ""
   n_gpu_per_node = 8
@@ -101,6 +105,7 @@ print(f'use_nodes: {use_nodes}' )
 print(f'exclude_nodes: {exclude_nodes}' )
 if profiler is not None: print(f'profiler: {profiler}' )
 if power_cap is not None: print(f'power_cap: {power_cap}' )
+print(f'use_omnistat: {use_omnistat}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
@@ -120,8 +125,25 @@ PROBLEM_TYPE=P_TYPE N_MPI=NMPI WORK_DIR=WORKDIR PARAMETER_FILE={parameter_file_n
 echo "Finished app run. $(date)"
 '''
 
+start_omnistat= '''
+export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+ml use /autofs/nccs-svm1_sw/crusher/amdsw/modules
+ml omnistat
+omnistat-usermode --start --interval 1
+'''
+
+stop_omnistat = '''
+omnistat-usermode --stopexporters
+omnistat-query --job ${SLURM_JOB_ID} --interval 5 --pdf omnistat.${SLURM_JOB_ID}.pdf
+omnistat-usermode --stopserver
+mv /tmp/omnistat/${SLURM_JOB_ID} data_omnistat.${SLURM_JOB_ID}
+'''
+
 slurm_script_content = set_env_command
+if use_omnistat: slurm_script_content += start_omnistat
 slurm_script_content += app_run_cmd
+if use_omnistat: slurm_script_content += stop_omnistat
+
 
 
 slurm_script = slurm_template 
@@ -148,4 +170,4 @@ print(f'Saved file: {file_name}')
 if use_slurm: submit_cmnd = f'sbatch {file_name}'
 else: submit_cmnd = f'bash {file_name}'
 print( f'Submitting job: {file_name}' )
-if use_slurm: os.system( submit_cmnd )
+# if use_slurm: os.system( submit_cmnd )
