@@ -170,4 +170,4 @@ print(f'Saved file: {file_name}')
 if use_slurm: submit_cmnd = f'sbatch {file_name}'
 else: submit_cmnd = f'bash {file_name}'
 print( f'Submitting job: {file_name}' )
-# if use_slurm: os.system( submit_cmnd )
+if use_slurm: os.system( submit_cmnd )
