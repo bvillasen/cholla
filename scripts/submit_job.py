@@ -127,15 +127,14 @@ echo "Finished app run. $(date)"
 
 start_omnistat= '''
 export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
-ml use /autofs/nccs-svm1_sw/crusher/amdsw/modules
-ml omnistat
-omnistat-usermode --start --interval 1
+export OMNISTAT_WRAPPER=/autofs/nccs-svm1_sw/crusher/amdsw/omnistat/1.2.0/misc/omnistat-ornl
+${OMNISTAT_WRAPPER} usermode --start --interval 1
 '''
 
 stop_omnistat = '''
-omnistat-usermode --stopexporters
-omnistat-query --job ${SLURM_JOB_ID} --interval 1 --pdf omnistat.${SLURM_JOB_ID}.pdf
-omnistat-usermode --stopserver
+${OMNISTAT_WRAPPER} usermode --stopexporters
+${OMNISTAT_WRAPPER} query --interval 5 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+${OMNISTAT_WRAPPER} usermode --stopserver
 mv /tmp/omnistat/${SLURM_JOB_ID} data_omnistat.${SLURM_JOB_ID}
 '''
 
