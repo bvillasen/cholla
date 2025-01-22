@@ -134,7 +134,7 @@ omnistat-usermode --start --interval 1
 
 stop_omnistat = '''
 omnistat-usermode --stopexporters
-omnistat-query --job ${SLURM_JOB_ID} --interval 5 --pdf omnistat.${SLURM_JOB_ID}.pdf
+omnistat-query --job ${SLURM_JOB_ID} --interval 1 --pdf omnistat.${SLURM_JOB_ID}.pdf
 omnistat-usermode --stopserver
 mv /tmp/omnistat/${SLURM_JOB_ID} data_omnistat.${SLURM_JOB_ID}
 '''
