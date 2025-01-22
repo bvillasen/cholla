@@ -26,6 +26,7 @@ parser.add_argument('--work_dir', dest='work_dir', type=str, help='Path of the w
 parser.add_argument('--use_nodes', dest='use_nodes', nargs='+', help='List of nodes to use for the run.', default=None )
 parser.add_argument('--exclude_nodes', dest='exclude_nodes', nargs='+', help='List of nodes to exclude for the run.', default=None )
 parser.add_argument('--profiler', dest='profiler', type=str, help='Type of profiler to use', default=None )
+parser.add_argument('--power_cap', dest='power_cap', type=int, help='Set GPU power cap', default=None )
 args = parser.parse_args()
 
 system = args.system
@@ -54,10 +55,12 @@ n_mpi_total = n_nodes * n_mpi_per_node
 job_name = f'c-{p_type}_N{n_nodes}' 
 use_nodes = args.use_nodes
 exclude_nodes = args.exclude_nodes
+power_cap = args.power_cap
 
 if not os.path.isdir(work_dir): os.mkdir(work_dir)
 run_base_name = 'run'
 run_dir = f'{work_dir}/{run_base_name}_nnodes{n_nodes}_nmpi{n_mpi_total}'
+if power_cap is not None: run_dir += f'_powercap{power_cap}'
 if not os.path.isdir(run_dir): os.mkdir(run_dir)
 work_dir = run_dir
 
@@ -71,8 +74,9 @@ if system == 'frontier':
   slurm_template = slurm_templates.frontier
   slurm_partition = ""
   n_gpu_per_node = 8
-  slurm_options = ''  
-else:   
+  slurm_options = ''
+  if power_cap is not None: slurm_options += f'#SBATCH --gpu-power-cap={power_cap}'  
+else:
   print(f'ERROR: System {system} is not supported.')
   exit(1)
 
@@ -95,7 +99,8 @@ print(f'n_nodes: {n_nodes}' )
 print(f'n_mpi_per_node: {n_mpi_per_node}' )
 print(f'use_nodes: {use_nodes}' )
 print(f'exclude_nodes: {exclude_nodes}' )
-print(f'profiler: {profiler}' )
+if profiler is not None: print(f'profiler: {profiler}' )
+if power_cap is not None: print(f'power_cap: {power_cap}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
