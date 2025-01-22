@@ -52,6 +52,8 @@ echo "Starting SLURM job. $(date)"
 
 SLURM_SCRIPT_CONTENT
 
+rocm-smi
+
 echo "Finished SLURM job. $(date)"
 '''
 
