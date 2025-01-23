@@ -18,6 +18,7 @@ n_hrs = 1
 n_threads_per_core = 1
 
 use_omnistat = False
+debug_queue = False
 
 parser = argparse.ArgumentParser( description="Cholla SLURM script generator.")
 parser.add_argument('--system', dest='system', type=str, help='System for the run.', default=None )
@@ -30,6 +31,7 @@ parser.add_argument('--exclude_nodes', dest='exclude_nodes', nargs='+', help='Li
 parser.add_argument('--profiler', dest='profiler', type=str, help='Type of profiler to use', default=None )
 parser.add_argument('--power_cap', dest='power_cap', type=int, help='Set GPU power cap', default=None )
 parser.add_argument('--use_omnistat', dest='use_omnistat', type=bool, help='Use omnistat for the run', default=False )
+parser.add_argument('--debug_queue', dest='debug_queue', type=bool, help='Use the debug queue', default=False )
 args = parser.parse_args()
 
 system = args.system
@@ -60,6 +62,7 @@ use_nodes = args.use_nodes
 exclude_nodes = args.exclude_nodes
 power_cap = args.power_cap
 use_omnistat = args.use_omnistat
+debug_queue = args.debug_queue
 
 if not os.path.isdir(work_dir): os.mkdir(work_dir)
 run_base_name = 'run'
@@ -96,6 +99,9 @@ if exclude_nodes is not None:
     nodes_list += f'{node},'
   slurm_options += f'#SBATCH --exclude {nodes_list[:-1]} \n'
 
+if debug_queue: slurm_options += f'#SBATCH -q debug'
+  
+
 print(f'system: {system}' )
 print(f'GPU type: {CHOLLA_GPU_TYPE}' )
 print(f'problem type: {p_type}' )
@@ -106,6 +112,7 @@ print(f'exclude_nodes: {exclude_nodes}' )
 if profiler is not None: print(f'profiler: {profiler}' )
 if power_cap is not None: print(f'power_cap: {power_cap}' )
 print(f'use_omnistat: {use_omnistat}' )
+print(f'debug_queue: {debug_queue}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
