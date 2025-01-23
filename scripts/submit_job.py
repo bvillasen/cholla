@@ -120,31 +120,31 @@ simulation_time = 0.1
 tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name, simulation_time=simulation_time )
 
 
-set_env_command = f'''
-# Set the Cholla environment
-export CHOLLA_ROOT={CHOLLA_ROOT}
-SYSTEM={system} source {CHOLLA_ROOT}/scripts/set_env.sh
-'''
+# set_env_command = f'''
+# # Set the Cholla environment
+# export CHOLLA_ROOT={CHOLLA_ROOT}
+# SYSTEM={system} source {CHOLLA_ROOT}/scripts/set_env.sh
+# '''
 
-app_run_cmd = f'''
-# Call application run script
-echo "Starting app run. $(date)"
-PROBLEM_TYPE=P_TYPE N_MPI=NMPI WORK_DIR=WORKDIR PARAMETER_FILE={parameter_file_name} PROFILER={profiler} bash {CHOLLA_ROOT}/scripts/run_app.sh
-echo "Finished app run. $(date)"
-'''
+set_env_command = ''
+
+# app_run_cmd = f'''
+# # Call application run script
+# echo "Starting app run. $(date)"
+# PROBLEM_TYPE=P_TYPE N_MPI=NMPI WORK_DIR=WORKDIR PARAMETER_FILE={parameter_file_name} PROFILER={profiler} bash {CHOLLA_ROOT}/scripts/run_app.sh
+# echo "Finished app run. $(date)"
+# '''
+app_run_cmd = 'sleep 120'
 
 start_omnistat= '''
-# data housing directory
-export OMNISTAT_PROMSERVER_DATADIR=/lustre/orion/${SLURM_JOB_ACCOUNT}/scratch/${USER}/omniwatch/${SLURM_JOB_ID}
-
 export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
 export OMNISTAT_WRAPPER=/autofs/nccs-svm1_sw/crusher/amdsw/omnistat/1.2.0/misc/omnistat-ornl
-${OMNISTAT_WRAPPER} usermode --start --interval 5
+${OMNISTAT_WRAPPER} usermode --start --interval 1
 '''
 
 stop_omnistat = '''
 ${OMNISTAT_WRAPPER} usermode --stopexporters
-${OMNISTAT_WRAPPER} query --interval 5 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+${OMNISTAT_WRAPPER} query --interval 1 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
 ${OMNISTAT_WRAPPER} usermode --stopserver
 mv /tmp/omnistat/${SLURM_JOB_ID} data_omnistat.${SLURM_JOB_ID}
 '''
