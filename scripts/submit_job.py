@@ -119,14 +119,11 @@ parameter_file_name = 'parameter_file.txt'
 simulation_time = 1.0
 tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name, simulation_time=simulation_time )
 
-
 set_env_command = f'''
 # Set the Cholla environment
 export CHOLLA_ROOT={CHOLLA_ROOT}
 SYSTEM={system} source {CHOLLA_ROOT}/scripts/set_env.sh
 '''
-
-set_env_command = ''
 
 app_run_cmd = f'''
 # Call application run script
