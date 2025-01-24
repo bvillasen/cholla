@@ -81,7 +81,7 @@ elif system == 'frontier':
   slurm_template = slurm_templates.frontier
   slurm_partition = ""
   n_gpu_per_node = 8
-  slurm_options = '#SBATCH -S 0'
+  slurm_options = '#SBATCH -S 0\n'
   if power_cap is not None: slurm_options += f'#SBATCH --gpu-power-cap={power_cap}'  
 else:
   print(f'ERROR: System {system} is not supported.')
