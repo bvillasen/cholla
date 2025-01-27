@@ -33,6 +33,10 @@ fi
 CHOLLA_EXEC=${CHOLLA_ROOT}/bin/cholla.${PROBLEM_TYPE}.${CHOLLA_SYSTEM}
 
 module list
+
+echo "Rank: $SLURM_PROCID"
+rocm-smi
+
 echo "CHOLLA_SYSTEM=${CHOLLA_SYSTEM}"
 echo "CHOLLA_EXEC=${CHOLLA_EXEC}"
 echo "PARAMETER_FILE=${PARAMETER_FILE}"
