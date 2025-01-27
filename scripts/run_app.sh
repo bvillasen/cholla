@@ -30,7 +30,8 @@ else
   PROFILER_CMD=""
 fi
 
-CHOLLA_EXEC=${CHOLLA_ROOT}/bin/cholla.${PROBLEM_TYPE}.${CHOLLA_SYSTEM}
+export CHOLLA_EXEC=${CHOLLA_ROOT}/bin/cholla.${PROBLEM_TYPE}.${CHOLLA_SYSTEM}
+export CHOLLA_PARAMETER_FILE=${PARAMETER_FILE}
 
 module list
 
@@ -46,7 +47,9 @@ echo "PROFILER_CMD=${PROFILER_CMD}"
 # Use blitz kernels instead of SDMA
 export HSA_ENABLE_SDMA=0
 
-RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log" 
+
+# RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log" 
+RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_ROOT}/scripts/run_cholla.sh |& tee ${WORK_DIR}/app_output.log" 
 echo -e "Run command: ${RUN_CMD}" 
 
 eval ${RUN_CMD}
