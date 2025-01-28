@@ -40,6 +40,17 @@ elif [[ "${SYSTEM}" = "frontier" ]]; then
   export CHOLLA_ENVSET=1
   export CHOLLA_GPU_TYPE='mi250x'
 
+elif [[ "${SYSTEM}" = "thera_mi250x" ]]; then
+  module load gcc 
+  module load openmpi/4.1.5-ucx1.14.1-rocm5.6.0 
+  module load rocm/5.6.0
+  module load hdf5-no-fortran
+  export MACHINE=thera
+  export CHOLLA_OMPI_ROOT=$THERA_OMPI_DIR
+  export CHOLLA_ENVSET=1
+  export CHOLLA_GPU_TYPE='mi250x'
+
+
 
 else
   echo -e "System: ${SYSTEM} not in list of known systems. "

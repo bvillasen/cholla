@@ -132,9 +132,16 @@ PROBLEM_TYPE=P_TYPE N_MPI=NMPI WORK_DIR=WORKDIR PARAMETER_FILE={parameter_file_n
 echo "Finished app run. $(date)"
 '''
 
+# start_omnistat= '''
+# export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+# export OMNISTAT_WRAPPER=/autofs/nccs-svm1_sw/crusher/amdsw/omnistat/1.2.0/misc/omnistat-ornl
+# ${OMNISTAT_WRAPPER} usermode --start --interval 1
+# '''
+
+
 start_omnistat= '''
-export OMNISTAT_VICSERVER_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
-export OMNISTAT_WRAPPER=/autofs/nccs-svm1_sw/crusher/amdsw/omnistat/1.2.0/misc/omnistat-ornl
+ml use /autofs/nccs-svm1_sw/crusher/amdsw/modules
+ml omnistat-wrapper
 ${OMNISTAT_WRAPPER} usermode --start --interval 1
 '''
 

@@ -1,6 +1,7 @@
 #-- make.host for AMD Lockhart
 #-- Compiler and flags for different build type
-CXX               = $(HOME)/util/ompi/bin/mpicxx
+#CXX               = $(HOME)/util/ompi/bin/mpicxx
+CXX               = mpicxx
 GPUCXX           ?= hipcc
 
 
@@ -17,7 +18,8 @@ OMP_NUM_THREADS   = 7
 JOB_LAUNCH        = srun -u -n 1 -c 8
 
 #-- Library
-MPI_ROOT          = $(HOME)/util/ompi
+#MPI_ROOT          = $(HOME)/util/ompi
+MPI_ROOT          = $(CHOLLA_OMPI_ROOT)
 HDF5_ROOT         = $(HDF5_DIR)
 #FFTW_ROOT         = $(shell dirname $(FFTW_DIR))
 GOOGLETEST_ROOT := $(if $(GOOGLETEST_ROOT),$(GOOGLETEST_ROOT),$(OLCF_GOOGLETEST_ROOT))

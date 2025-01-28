@@ -20,7 +20,8 @@ void Print_GPU_Memory_Usage(std::string const &additional_text)
   GPU_Error_Check(cudaMemGetInfo(&gpu_free_memory, &gpu_total_memory));
 
   // Assuming that all GPUs in the system have the same amount of memory
-  size_t const gpu_used_memory = Reduce_size_t_Max(gpu_total_memory - gpu_free_memory);
+  // size_t const gpu_used_memory = Reduce_size_t_Max(gpu_total_memory - gpu_free_memory);
+  size_t const gpu_used_memory = 0;
 
   Real const percent_used = 100.0 * (static_cast<Real>(gpu_used_memory) / static_cast<Real>(gpu_total_memory));
 
