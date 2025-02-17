@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
   double stop_simulation = Get_Time();
   double simulation_time = stop_simulation - start_simulation;
   int64_t grid_size = (int64_t)G.H.nx_real * G.H.ny_real * G.H.nz_real;
-  int64_t n_steps = n_step;
+  int64_t n_steps = G.H.n_step;
   double fom = (double) grid_size * n_steps / simulation_time;
   printf("Simulation time: %f \n", simulation_time );
   printf("Grid size: %ld cells\n", grid_size );
