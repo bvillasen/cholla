@@ -390,10 +390,10 @@ int main(int argc, char *argv[])
   int64_t grid_size = (int64_t)G.H.nx_real * G.H.ny_real * G.H.nz_real;
   int64_t n_steps = G.H.n_step;
   double fom = (double) grid_size * n_steps / simulation_time;
-  printf("Simulation time: %f secs\n", simulation_time );
-  printf("Grid size: %ld cells\n", grid_size );
-  printf("N steps: %ld \n", n_steps );
-  printf("FOM: %e  [cells * n_steps / time]\n", fom );
+  chprintf("Simulation time: %f secs\n", simulation_time );
+  chprintf("Grid size: %ld cells\n", grid_size );
+  chprintf("N steps: %ld \n", n_steps );
+  chprintf("FOM: %e  [cells * n_steps / time]\n", fom );
   
 
   #ifdef USE_ROCSTAR
