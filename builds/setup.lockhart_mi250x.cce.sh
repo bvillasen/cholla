@@ -3,6 +3,7 @@
 #-- This script needs to be source-d in the terminal, e.g.
 #   source ./setup.lockhart.cce.sh
 
+module load PrgEnv-cray
 module load cray-python
 module load rocm
 module load craype-accel-amd-gfx90a
