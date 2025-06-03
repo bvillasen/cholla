@@ -7,9 +7,21 @@ CXXFLAGS_DEBUG    = -g -O0 -std=c++17
 CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -Wno-unused-result
 
 GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx942 -Wall -Wno-unused-result -munsafe-fp-atomics
-GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result
+GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx942 -Wall -Wno-unused-result
 HIPCONFIG	  = -I$(ROCM_PATH)/include $(shell hipconfig -C) # workaround for Rocm 5.2 warnings
 #HIPCONFIG	  = $(shell hipconfig -C)
+
+## Flags for rocStar (HSMP Version)
+#ESMI_DIR          =   $(HOME)/util/rocSTAR/build/esmi_ib_library
+#CXXFLAGS_OPTIMIZE +=  -I$(ESMI_DIR) -I$(ESMI_DIR)/include 
+#GPUFLAGS          +=  -I$(ESMI_DIR) -I$(ESMI_DIR)/include 
+#LIBS              +=  -L$(ESMI_DIR)/build -le_smi_tool 
+
+# Flags for rocStar
+# ROCSTAR_DIR        = $(HOME)/util/rocSTAR/build
+# CXXFLAGS_OPTIMIZE += -I$(ROCSTAR_DIR)/include 
+# GPUFLAGS          += -I$(ROCSTAR_DIR)/include 
+# LIBS              += -L$(ROCSTAR_DIR)/lib -lrocSTAR 
 
 OMP_NUM_THREADS   = 7
 #-- How to launch job
