@@ -13,7 +13,7 @@
   #include "../io/io.h"
   #include "../model/disk_galaxy.h"
   #include "../utils/error_handling.h"
-  #include "../utils/prng_utilities.h"
+  // #include "../utils/prng_utilities.h"
 
   #ifdef MPI_CHOLLA
     #include "../mpi/mpi_routines.h"
@@ -527,13 +527,13 @@ void Particles3D::Initialize_Sphere(struct Parameters *P)
   part_int_t pID = 0;
   Real pPos_x, pPos_y, pPos_z, r;
   std::mt19937_64 generator(P->prng_seed);
-  std::uniform_real_distribution<Real> xPositionPrng(G.xMin, G.xMax);
-  std::uniform_real_distribution<Real> yPositionPrng(G.yMin, G.yMax);
-  std::uniform_real_distribution<Real> zPositionPrng(G.zMin, G.zMax);
+  std::uniform_real_distribution<Real> xPositionPrng(0, 2*sphereR);
+  std::uniform_real_distribution<Real> yPositionPrng(0, 2*sphereR);
+  std::uniform_real_distribution<Real> zPositionPrng(0, 2*sphereR);
   while (pID < n_particles_local) {
-    pPos_x = xPositionPrng(generator);
-    pPos_y = yPositionPrng(generator);
-    pPos_z = zPositionPrng(generator);
+    pPos_x = xPositionPrng(generator) - sphereR + center_x;
+    pPos_y = yPositionPrng(generator) - sphereR + center_y;
+    pPos_z = zPositionPrng(generator) - sphereR + center_z;
 
     r = sqrt((pPos_x - center_x) * (pPos_x - center_x) + (pPos_y - center_y) * (pPos_y - center_y) +
              (pPos_z - center_z) * (pPos_z - center_z));
