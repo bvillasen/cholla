@@ -24,7 +24,7 @@ SLURM_SCRIPT_CONTENT
 echo "Finished SLURM job. $(date)"
 '''
 
-conductor='''#!/bin/bash
+bash_only='''#!/bin/bash
 
 echo "Starting job. $(date)"
 

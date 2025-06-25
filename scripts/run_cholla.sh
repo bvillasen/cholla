@@ -4,7 +4,7 @@ export MPI_RANK=${SLURM_PROCID}
 export MPI_SIZE=${SLURM_NPROCS}
 echo "MPI_RANK: $MPI_RANK  MPI_SIZE: $MPI_SIZE"
 
-rocm-smi
+# rocm-smi
 
 # if [ $(( $MPI_RANK % $MPI_SIZE )) -eq 0 ]; then
 #     NODE=$(expr $MPI_RANK / $MPI_SIZE)

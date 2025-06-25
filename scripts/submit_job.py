@@ -77,12 +77,20 @@ if system == 'lockhart_mi250x':
   slurm_partition = ""
   n_gpu_per_node = 8
   slurm_options = ''
+elif system == 'lockhart_mi300a':
+  slurm_template = slurm_templates.lockhart
+  slurm_partition = "#SBATCH -p MI300"
+  n_gpu_per_node = 4
+  slurm_options = ''
 elif system == 'frontier':
   slurm_template = slurm_templates.frontier
   slurm_partition = ""
   n_gpu_per_node = 8
   slurm_options = '#SBATCH -S 0\n'
   if power_cap is not None: slurm_options += f'#SBATCH --gpu-power-cap={power_cap}'  
+elif system == 'vultr':
+  use_slurm = False
+  slurm_template = slurm_templates.bash_only
 else:
   print(f'ERROR: System {system} is not supported.')
   exit(1)
@@ -116,7 +124,7 @@ print(f'debug_queue: {debug_queue}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
-simulation_time = 1.0
+simulation_time = 0.05
 tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name, simulation_time=simulation_time )
 
 set_env_command = f'''
@@ -127,6 +135,7 @@ SYSTEM={system} source {CHOLLA_ROOT}/scripts/set_env.sh
 
 app_run_cmd = f'''
 # Call application run script
+cd {work_dir}
 echo "Starting app run. $(date)"
 PROBLEM_TYPE=P_TYPE N_MPI=NMPI WORK_DIR=WORKDIR PARAMETER_FILE={parameter_file_name} PROFILER={profiler} bash {CHOLLA_ROOT}/scripts/run_app.sh
 echo "Finished app run. $(date)"
@@ -161,16 +170,17 @@ if use_omnistat: slurm_script_content += stop_omnistat
 
 slurm_script = slurm_template 
 slurm_script = slurm_script.replace( 'SLURM_SCRIPT_CONTENT', slurm_script_content)
-slurm_script = slurm_script.replace( 'SBATCH_PARTITION', slurm_partition )
-slurm_script = slurm_script.replace( 'JOB_NAME', job_name )
-slurm_script = slurm_script.replace( 'P_TYPE', p_type )
+if use_slurm:
+  slurm_script = slurm_script.replace( 'SBATCH_PARTITION', slurm_partition )
+  slurm_script = slurm_script.replace( 'JOB_NAME', job_name )
+  slurm_script = slurm_script.replace( 'N_HRS', str(n_hrs) )
+  slurm_script = slurm_script.replace( 'N_NODES', str(n_nodes) )
+  slurm_script = slurm_script.replace( 'N_TASK_PER_NODE', str(n_mpi_per_node) )
+  slurm_script = slurm_script.replace( 'N_GPU_PER_NODE', str(n_gpu_per_node) )
+  slurm_script = slurm_script.replace( 'N_THREADS_PER_CORE', str(n_threads_per_core) )
+  slurm_script = slurm_script.replace( 'SLURM_OPTIONS', slurm_options )
 slurm_script = slurm_script.replace( 'NMPI', str(n_mpi_total) )
-slurm_script = slurm_script.replace( 'N_HRS', str(n_hrs) )
-slurm_script = slurm_script.replace( 'N_NODES', str(n_nodes) )
-slurm_script = slurm_script.replace( 'N_TASK_PER_NODE', str(n_mpi_per_node) )
-slurm_script = slurm_script.replace( 'N_GPU_PER_NODE', str(n_gpu_per_node) )
-slurm_script = slurm_script.replace( 'N_THREADS_PER_CORE', str(n_threads_per_core) )
-slurm_script = slurm_script.replace( 'SLURM_OPTIONS', slurm_options )
+slurm_script = slurm_script.replace( 'P_TYPE', p_type )
 slurm_script = slurm_script.replace( 'WORKDIR', work_dir )
 
 file_name = f'{work_dir}/submit_job.slurm'

@@ -20,6 +20,9 @@ elif [[ "${CHOLLA_SYSTEM}" == "pp_conductor" ]]; then
 elif [[ "${CHOLLA_SYSTEM}" == "frontier" ]]; then
   AFFINITY="--gpu-bind=closest"
   SRUN="srun"
+elif [[ "${CHOLLA_SYSTEM}" == "vultr" ]]; then
+  AFFINITY="--mca pml ucx -x UCX_PROTO_ENABLE=n -x UCX_ROCM_COPY_LAT=2e-6 -x UCX_ROCM_IPC_MIN_ZCOPY=4096 "
+  SRUN="${CHOLLA_OMPI_ROOT}/bin/mpirun"  
 fi  
 
 if [[ "${PROFILER}" == "rocprofv3_stats" ]]; then
@@ -36,7 +39,7 @@ export CHOLLA_PARAMETER_FILE=${PARAMETER_FILE}
 module list
 
 echo "Rank: $SLURM_PROCID"
-rocm-smi
+# rocm-smi
 
 echo "CHOLLA_SYSTEM=${CHOLLA_SYSTEM}"
 echo "CHOLLA_EXEC=${CHOLLA_EXEC}"
@@ -48,8 +51,12 @@ echo "PROFILER_CMD=${PROFILER_CMD}"
 export HSA_ENABLE_SDMA=0
 
 
-# RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log" 
-RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_ROOT}/scripts/run_cholla.sh |& tee ${WORK_DIR}/app_output.log" 
+export ROCSTAR_OUTPUT_DIR="${WORK_DIR}/rocSTAR_data"
+# export ROCSTAR_DERIVED_POWER=1
+ROCSTAR_CMD="/localhome/bvillase/util/rocSTAR/rocSTAR_launch.sh"
+
+RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${ROCSTAR_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log" 
+# RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_ROOT}/scripts/run_cholla.sh |& tee ${WORK_DIR}/app_output.log" 
 echo -e "Run command: ${RUN_CMD}" 
 
 eval ${RUN_CMD}

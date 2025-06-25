@@ -8,19 +8,26 @@ def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name,
 
   if gpu_type == 'mi250x': 
     nx_base = 256
-    Lx_base = 0.5
+    Lx_base = 1.0
   elif gpu_type == 'mi300a': 
     nx_base = 512
-    Lx_base = 1.0
+    Lx_base = 2.0
+  elif gpu_type == 'mi300x': 
+    nx_base = 512
+    Lx_base = 2.0  
   else: 
     nx_base = 256
-    Lx_base = 0.5
+    Lx_base = 1.0
 
   ny_base = 512
-  nz_base = 512 
+  nz_base = 256 
 
-  Ly_base = 1.0
+  Ly_base = 2.0
   Lz_base = 1.0
+
+
+
+
 
   nx = n_mpi * nx_base
   ny = ny_base
@@ -31,6 +38,9 @@ def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name,
   Lz = Lz_base
 
   run_time = simulation_time
+
+  ics_type = 'Spherical_Overdensity_3D'
+  # ics_type = 'Uniform'
 
   params_hydro=f'''#
 # Parameter File for the 3D Hydrodynamics.
@@ -50,7 +60,7 @@ outstep=100
 # value of gamma
 gamma=1.66666667
 # name of initial conditions
-init=Spherical_Overdensity_3D
+init={ics_type}
 # domain properties
 xmin=0.0
 ymin=0.0
@@ -73,6 +83,10 @@ outdir={work_dir}/snapshot_files/
 '''
 
   if problem_type == 'hydro':  parameters = params_hydro
+  elif problem_type == 'gravity':  parameters = params_hydro
+  elif problem_type == 'particles':  parameters = params_hydro
+  else: 
+    print(f"ERROR: problem type: {problem_type} is not valid")
 
   file = open( f'{work_dir}/{file_name}', 'w' )
   file.write( parameters )
