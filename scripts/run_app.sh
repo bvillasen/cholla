@@ -51,12 +51,14 @@ echo "PROFILER_CMD=${PROFILER_CMD}"
 export HSA_ENABLE_SDMA=0
 
 
-export ROCSTAR_OUTPUT_DIR="${WORK_DIR}/rocSTAR_data"
+# export ROCSTAR_OUTPUT_DIR="${WORK_DIR}/rocSTAR_data"
 # export ROCSTAR_DERIVED_POWER=1
-ROCSTAR_CMD="/localhome/bvillase/util/rocSTAR/rocSTAR_launch.sh"
+# ROCSTAR_CMD="/localhome/bvillase/util/rocSTAR/rocSTAR_launch.sh"
+# RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${ROCSTAR_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log"
 
-RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${ROCSTAR_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log" 
-# RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_ROOT}/scripts/run_cholla.sh |& tee ${WORK_DIR}/app_output.log" 
+RUN_CMD="${SRUN} -n ${N_MPI} ${AFFINITY} ${PROFILER_CMD} ${CHOLLA_EXEC} ${PARAMETER_FILE} |& tee ${WORK_DIR}/app_output.log"
+
+
 echo -e "Run command: ${RUN_CMD}" 
 
 eval ${RUN_CMD}
