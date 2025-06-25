@@ -7,8 +7,8 @@ def generate_parameter_file( problem_type, gpu_type, n_mpi, work_dir, file_name,
   print( f"file_name: {file_name}")
 
   if gpu_type == 'mi250x': 
-    nx_base = 256
-    Lx_base = 1.0
+    nx_base = 512
+    Lx_base = 2.0
   elif gpu_type == 'mi300a': 
     nx_base = 512
     Lx_base = 2.0
