@@ -125,7 +125,7 @@ print(f'debug_queue: {debug_queue}' )
 
 # Generate parameter file
 parameter_file_name = 'parameter_file.txt' 
-simulation_time = 0.05
+simulation_time = 0.5
 tools.generate_parameter_file( p_type, CHOLLA_GPU_TYPE, n_mpi_total, work_dir, parameter_file_name, simulation_time=simulation_time )
 
 set_env_command = f'''
