@@ -11,7 +11,7 @@
 #endif  // PARTICLES
 
 #ifdef USE_ROCSTAR
-#include "tools/e_smi_tool.h"
+#include "rocSTAR.h"
 #endif
 
 #if PRECISION == 1
