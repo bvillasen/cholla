@@ -36,7 +36,7 @@ echo "Finished job. $(date)"
 frontier='''#!/bin/bash
 #SBATCH -A ven114
 #SBATCH -J JOB_NAME
-#SBATCH --time=N_HRS:00:00
+#SBATCH --time=N_HRS:N_MIN:00
 #SBATCH --no-requeue
 #SBATCH --nodes=N_NODES
 #SBATCH --ntasks-per-node=N_TASK_PER_NODE

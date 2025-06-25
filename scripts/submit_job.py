@@ -14,7 +14,7 @@ if not CHOLLA_ROOT:
 
 CHOLLA_GPU_TYPE = os.getenv('CHOLLA_GPU_TYPE', None)
 
-n_hrs = 1
+n_hrs, n_min = 1, 0
 n_threads_per_core = 1
 
 use_omnistat = False
@@ -83,6 +83,7 @@ elif system == 'lockhart_mi300a':
   n_gpu_per_node = 4
   slurm_options = ''
 elif system == 'frontier':
+  n_hrs, n_min = 0, 10
   slurm_template = slurm_templates.frontier
   slurm_partition = ""
   n_gpu_per_node = 8
@@ -174,6 +175,7 @@ if use_slurm:
   slurm_script = slurm_script.replace( 'SBATCH_PARTITION', slurm_partition )
   slurm_script = slurm_script.replace( 'JOB_NAME', job_name )
   slurm_script = slurm_script.replace( 'N_HRS', str(n_hrs) )
+  slurm_script = slurm_script.replace( 'N_MIN', str(n_min) )
   slurm_script = slurm_script.replace( 'N_NODES', str(n_nodes) )
   slurm_script = slurm_script.replace( 'N_TASK_PER_NODE', str(n_mpi_per_node) )
   slurm_script = slurm_script.replace( 'N_GPU_PER_NODE', str(n_gpu_per_node) )
