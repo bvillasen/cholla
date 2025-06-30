@@ -61,6 +61,9 @@ elif [[ "${SYSTEM}" = "frontier" ]]; then
   export CHOLLA_ENVSET=1
   export CHOLLA_GPU_TYPE='mi250x'
 
+  # Use blitz kernels instead of SDMA
+  export HSA_ENABLE_SDMA=0
+
 elif [[ "${SYSTEM}" = "thera_mi250" ]]; then
   module load gcc 
   module load rocm/6.4.0
