@@ -34,6 +34,9 @@ if [[ "${SYSTEM}" = "lockhart_mi250x" ]]; then
   export CHOLLA_ENVSET=1
   export CHOLLA_GPU_TYPE='mi250x'
 
+  # Use blitz kernels instead of SDMA
+  export HSA_ENABLE_SDMA=0
+
   export LD_LIBRARY_PATH=/home/bvillase/util/rocSTAR/build/lib:$LD_LIBRARY_PATH
 
 elif [[ "${SYSTEM}" = "lockhart_mi300a" ]]; then
