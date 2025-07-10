@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
 
   if (procID == 0){
     std::string marker_label = "simulation_loop";
-    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode start --text \\\"" + marker_label + "\\\"";
+    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode start --text \"" + marker_label + "\"";
     system(omnistat_marker_cmd.c_str());      
   }  
 
