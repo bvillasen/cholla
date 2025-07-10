@@ -32,6 +32,8 @@
 
 #include "grid/grid_enum.h"
 
+#include <cstdlib> //Needed to call system()
+
 int main(int argc, char *argv[])
 {
   #ifdef USE_ROCSTAR
@@ -250,6 +252,12 @@ int main(int argc, char *argv[])
 
   double start_simulation = Get_Time();
 
+  if (procID == 0){
+    std::string marker_label = "simulation_loop";
+    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode start --text \\\"" + marker_label + "\\\"";
+    system(omnistat_marker_cmd.c_str());      
+  }  
+
   while (G.H.t < P.tout) {
 // get the start time
 #ifdef CPU_TIME
@@ -383,6 +391,11 @@ int main(int argc, char *argv[])
     mhd::checkMagneticDivergence(G);
 #endif  // MHD
   }     /*end loop over timesteps*/
+
+  if (procID == 0){
+    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode stop";
+    system(omnistat_marker_cmd.c_str());      
+  } 
 
 
   double stop_simulation = Get_Time();
