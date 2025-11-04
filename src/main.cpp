@@ -252,11 +252,11 @@ int main(int argc, char *argv[])
 
   double start_simulation = Get_Time();
 
-  if (procID == 0){
-    std::string marker_label = "simulation_loop";
-    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode start --text \"" + marker_label + "\"";
-    system(omnistat_marker_cmd.c_str());      
-  }  
+  // if (procID == 0){
+  //   std::string marker_label = "simulation_loop";
+  //   std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode start --text \"" + marker_label + "\"";
+  //   system(omnistat_marker_cmd.c_str());      
+  // }  
 
   while (G.H.t < P.tout) {
 // get the start time
@@ -392,10 +392,10 @@ int main(int argc, char *argv[])
 #endif  // MHD
   }     /*end loop over timesteps*/
 
-  if (procID == 0){
-    std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode stop";
-    system(omnistat_marker_cmd.c_str());      
-  } 
+  // if (procID == 0){
+  //   std::string omnistat_marker_cmd = "${OMNISTAT_DIR}/omnistat-annotate --mode stop";
+  //   system(omnistat_marker_cmd.c_str());      
+  // } 
 
 
   double stop_simulation = Get_Time();
