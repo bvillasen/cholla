@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
     #ifdef OMNISTAT_FOM
     double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
     if (procID == 0) {
-      std::string fom_cmd = "curl -X POST http://localhost:8001/fom "
+      std::string fom_cmd = "curl -s -X POST http://localhost:8001/fom "
                   "-H \"Content-Type: application/json\" "
                   "-d \"{\\\"name\\\":\\\"gflops\\\", \\\"value\\\":" + 
                   std::to_string(fom_value) + "}\"";
