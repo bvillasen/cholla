@@ -34,6 +34,8 @@
 
 #include <cstdlib> //Needed to call system()
 
+#define OMNISTAT_FOM
+
 int main(int argc, char *argv[])
 {
   #ifdef USE_ROCSTAR
@@ -339,6 +341,17 @@ int main(int argc, char *argv[])
         G.H.n_step, G.H.t, G.H.dt, (stop_step - start_step) * 1000, G.H.t_wall);
 
     if (P.output_always) G.H.Output_Now = true;
+    
+    #ifdef OMNISTAT_FOM
+    double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
+    if (procID == 0) {
+      std::string fom_cmd = "curl -X POST http://localhost:8001/fom "
+                  "-H \"Content-Type: application/json\" "
+                  "-d \"{\\\"name\\\":\\\"gflops\\\", \\\"value\\\":" + 
+                  std::to_string(fom_value) + "}\"";
+      system(fom_cmd.c_str());
+    }
+    #endif
 
 #ifdef ANALYSIS
     if (G.Analysis.Output_Now) {
