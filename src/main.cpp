@@ -127,20 +127,22 @@ int main(int argc, char *argv[])
   Write_Message_To_Log_File(message.c_str());
 
 #ifdef OUTPUT_FOM
-  std::chrono::high_resolution_clock::time_point current_time;
-  int64_t timestamp = get_nanoseconds_stamp(current_time);
   FILE *fom_file = nullptr;  // file pointer for FOM output
-  // Define FOM output file
-  std::string fom_filename = std::string(P.outdir) + "fom.txt";
-  fom_file = fopen(fom_filename.c_str(), "w");
-  if (fom_file != nullptr) {
-    fprintf(fom_file, "# Cholla FOM (Figure of Merit) Output\n");
-    fprintf(fom_file, "# Git Commit Hash: %s\n", GIT_HASH);
-    fprintf(fom_file, "# Macro Flags: %s\n", MACRO_FLAGS);
-    fprintf(fom_file, "#\n");
-    chprintf("FOM output file opened: %s\n", fom_filename.c_str());
-  } else {
-    chprintf("Warning: Could not open FOM output file: %s\n", fom_filename.c_str());
+  if (procID == 0) {
+    std::chrono::high_resolution_clock::time_point current_time;
+    int64_t timestamp = get_nanoseconds_stamp(current_time);
+    // Define FOM output file
+    std::string fom_filename = "fom.csv";
+    fom_file = fopen(fom_filename.c_str(), "w");
+    if (fom_file != nullptr) {
+      fprintf(fom_file, "# Cholla FOM (Figure of Merit) Output\n");
+      fprintf(fom_file, "# Git Commit Hash: %s\n", GIT_HASH);
+      fprintf(fom_file, "# Macro Flags: %s\n", MACRO_FLAGS);
+      fprintf(fom_file, "#\n");
+      chprintf("FOM output file opened: %s\n", fom_filename.c_str());
+    } else {
+      chprintf("Warning: Could not open FOM output file: %s\n", fom_filename.c_str());
+    }
   }
 #endif
 
@@ -380,12 +382,16 @@ int main(int argc, char *argv[])
     #endif
 
     #ifdef OUTPUT_FOM
-      // Write FOM data to file
-      double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
-      if (fom_file != nullptr) {
-        fprintf(fom_file, "%d %ld %e\n", G.H.n_step, timestamp, fom_value);
-        
+      if (procID == 0) {
+        // Write FOM data to file
+        std::chrono::high_resolution_clock::time_point current_time;
+        int64_t timestamp = get_nanoseconds_stamp(current_time);
+        double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
+        if (fom_file != nullptr) {
+          fprintf(fom_file, "%d %ld %e\n", G.H.n_step, timestamp, fom_value);
+        }
       }
+
     #endif
   
 
@@ -473,9 +479,11 @@ int main(int argc, char *argv[])
 
 #ifdef OUTPUT_FOM
   // Close FOM output file
-  if (fom_file != nullptr) {
-    fclose(fom_file);
-    chprintf("FOM output file closed.\n");
+  if (procID == 0) {
+    if (fom_file != nullptr) {
+      fclose(fom_file);
+      chprintf("FOM output file closed.\n");
+    }
   }
 #endif
 
