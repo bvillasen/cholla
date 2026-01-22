@@ -16,6 +16,7 @@
 #include "io/io.h"
 #include "utils/cuda_utilities.h"
 #include "utils/error_handling.h"
+#include <chrono>
 
 #ifdef SUPERNOVA
   #include "particles/supernova.h"
@@ -34,7 +35,14 @@
 
 #include <cstdlib> //Needed to call system()
 
-#define OMNISTAT_FOM
+// #define OMNISTAT_FOM
+#define OUTPUT_FOM
+
+int64_t get_nanoseconds_stamp(std::chrono::high_resolution_clock::time_point &currentTime){
+  currentTime = std::chrono::high_resolution_clock::now();
+  auto timestamp = std::chrono::time_point_cast<std::chrono::nanoseconds>(currentTime);
+  return timestamp.time_since_epoch().count(); 
+}
 
 int main(int argc, char *argv[])
 {
@@ -117,6 +125,24 @@ int main(int argc, char *argv[])
   Write_Message_To_Log_File(message.c_str());
   message = "Macro Flags     = " + std::string(MACRO_FLAGS);
   Write_Message_To_Log_File(message.c_str());
+
+#ifdef OUTPUT_FOM
+  std::chrono::high_resolution_clock::time_point current_time;
+  int64_t timestamp = get_nanoseconds_stamp(current_time);
+  FILE *fom_file = nullptr;  // file pointer for FOM output
+  // Define FOM output file
+  std::string fom_filename = std::string(P.outdir) + "fom.txt";
+  fom_file = fopen(fom_filename.c_str(), "w");
+  if (fom_file != nullptr) {
+    fprintf(fom_file, "# Cholla FOM (Figure of Merit) Output\n");
+    fprintf(fom_file, "# Git Commit Hash: %s\n", GIT_HASH);
+    fprintf(fom_file, "# Macro Flags: %s\n", MACRO_FLAGS);
+    fprintf(fom_file, "#\n");
+    chprintf("FOM output file opened: %s\n", fom_filename.c_str());
+  } else {
+    chprintf("Warning: Could not open FOM output file: %s\n", fom_filename.c_str());
+  }
+#endif
 
   // initialize the grid
   G.Initialize(&P);
@@ -353,6 +379,16 @@ int main(int argc, char *argv[])
     }
     #endif
 
+    #ifdef OUTPUT_FOM
+      // Write FOM data to file
+      double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
+      if (fom_file != nullptr) {
+        fprintf(fom_file, "%d %ld %e\n", G.H.n_step, timestamp, fom_value);
+        
+      }
+    #endif
+  
+
 #ifdef ANALYSIS
     if (G.Analysis.Output_Now) {
       G.Compute_and_Output_Analysis(&P);
@@ -420,7 +456,7 @@ int main(int argc, char *argv[])
   chprintf("Grid size: %ld cells\n", grid_size );
   chprintf("N steps: %ld \n", n_steps );
   chprintf("FOM: %e  [cells * n_steps / time]\n", fom );
-  
+
 
   #ifdef USE_ROCSTAR
   rocStarFinalize();
@@ -434,6 +470,14 @@ int main(int argc, char *argv[])
 
   message = "Simulation completed successfully.";
   Write_Message_To_Log_File(message.c_str());
+
+#ifdef OUTPUT_FOM
+  // Close FOM output file
+  if (fom_file != nullptr) {
+    fclose(fom_file);
+    chprintf("FOM output file closed.\n");
+  }
+#endif
 
   // free the grid
   G.Reset();
