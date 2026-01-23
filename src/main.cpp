@@ -389,9 +389,9 @@ int main(int argc, char *argv[])
         double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
         if (fom_file != nullptr) {
           fprintf(fom_file, "%d %ld %e\n", G.H.n_step, timestamp, fom_value);
+          fflush(fom_file);
         }
       }
-
     #endif
   
 
