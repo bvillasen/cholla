@@ -135,10 +135,12 @@ int main(int argc, char *argv[])
     std::string fom_filename = "fom.csv";
     fom_file = fopen(fom_filename.c_str(), "w");
     if (fom_file != nullptr) {
-      fprintf(fom_file, "# Cholla FOM (Figure of Merit) Output\n");
-      fprintf(fom_file, "# Git Commit Hash: %s\n", GIT_HASH);
-      fprintf(fom_file, "# Macro Flags: %s\n", MACRO_FLAGS);
-      fprintf(fom_file, "#\n");
+      // Disable buffering for immediate writes
+      setvbuf(fom_file, nullptr, _IONBF, 0);
+      // fprintf(fom_file, "# Cholla FOM (Figure of Merit) Output\n");
+      // fprintf(fom_file, "# Git Commit Hash: %s\n", GIT_HASH);
+      // fprintf(fom_file, "# Macro Flags: %s\n", MACRO_FLAGS);
+      // fprintf(fom_file, "#\n");
       chprintf("FOM output file opened: %s\n", fom_filename.c_str());
     } else {
       chprintf("Warning: Could not open FOM output file: %s\n", fom_filename.c_str());
