@@ -1,16 +1,19 @@
 #-- make.host for AMD Lockhart
 #-- Compiler and flags for different build type
 #CXX               = $(HOME)/util/ompi/bin/mpicxx
-CXX               = mpicxx
-GPUCXX           ?= hipcc
+CXX              = $(HOME)/util/openmpi/rocm7.2.0/install/ompi/bin/mpicxx
+CC               = $(HOME)/util/openmpi/rocm7.2.0/install/ompi/bin/mpicc
+GPUCXX           ?= $(ROCM_PATH)/bin/hipcc
 
 
 
 CXXFLAGS_DEBUG    = -g -O0 -std=c++17
-CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -L
+CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 
 
-GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx90a  -munsafe-fp-atomics 
-GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a 
+#GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx90a  -munsafe-fp-atomics 
+#GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a 
+GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx950
+GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx950 
 HIPCONFIG	  = $(shell hipconfig -C)
 
 OMP_NUM_THREADS   = 7
@@ -19,8 +22,8 @@ JOB_LAUNCH        = srun -u -n 1 -c 8
 
 #-- Library
 #MPI_ROOT          = $(HOME)/util/ompi
-MPI_ROOT          = $(CHOLLA_OMPI_ROOT)
-HDF5_ROOT         = $(HDF5_DIR)
+MPI_ROOT          = $(HOME)/util/openmpi/rocm7.2.0/install/ompi/
+HDF5_ROOT         = $(HOME)/util/hdf5/v1.12.2/install
 #FFTW_ROOT         = $(shell dirname $(FFTW_DIR))
 GOOGLETEST_ROOT := $(if $(GOOGLETEST_ROOT),$(GOOGLETEST_ROOT),$(OLCF_GOOGLETEST_ROOT))
 

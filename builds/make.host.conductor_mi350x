@@ -1,0 +1,26 @@
+#-- make.host for AMD Lockhart
+#-- Compiler and flags for different build type
+CC                = ${OMPI_DIR}/bin/mpicc
+CXX               = ${OMPI_DIR}/bin/mpicxx
+GPUCXX           ?= ${ROCM_PATH}/bin/hipcc
+
+CXXFLAGS_DEBUG    = -g -O0 -std=c++17
+CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -Wno-unused-result
+
+GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx950 -Wall -Wno-unused-result -munsafe-fp-atomics -fPIE
+GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx950 -Wall -Wno-unused-result
+HIPCONFIG	  = -I$(ROCM_PATH)/include $(shell hipconfig -C) # workaround for Rocm 5.2 warnings
+#HIPCONFIG	  = $(shell hipconfig -C)
+
+OMP_NUM_THREADS   = 16
+#-- How to launch job
+JOB_LAUNCH        = srun -u -n 1 -c 8
+
+#-- Library
+MPI_ROOT          = ${OMPI_DIR}
+#HDF5_ROOT         = ${HDF5_ROOT}
+CFLAGS_OPTIMIZE   += -I$(MPI_ROOT)/include
+CXXFLAGS_OPTIMIZE += -I$(MPI_ROOT)/include -I$(ROCM_PATH)/include
+
+#-- Use GPU-aware MPI
+MPI_GPU           = -DMPI_GPU

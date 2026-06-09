@@ -3,11 +3,12 @@
 #-- This script needs to be source-d in the terminal, e.g.
 #   source ./setup.lockhart.cce.sh
 
+module purge
 module load PrgEnv-cray
 module load cray-python
-module load rocm
+module load rocm/7.2.0
 module load craype-accel-amd-gfx942
-module load cray-hdf5 cray-fftw
+module load cray-hdf5 
 module load libfabric
 
 #-- GPU-aware MPI
