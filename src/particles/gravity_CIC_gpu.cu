@@ -260,6 +260,92 @@ void Particles_3D::Get_Gravity_CIC_GPU_function( part_int_t n_local, int nx_loca
 
 }
 
+#ifdef PARTICLES_PAIR_FORCES
+
+__global__ void Get_Pair_Forces_Kernel( part_int_t n_local, Real particle_mass, const Real *__restrict__ pos_x_dev, const Real *__restrict__ pos_y_dev, const Real *__restrict__ pos_z_dev, const Real *__restrict__ mass_dev, Real *__restrict__ pair_forces_x_dev, Real *__restrict__ pair_forces_y_dev, Real *__restrict__ pair_forces_z_dev ){
+
+  part_int_t tid = blockIdx.x * blockDim.x + threadIdx.x ;
+
+  extern __shared__ Real shared_data[];
+  Real *shared_pos_x = shared_data;
+  Real *shared_pos_y = shared_pos_x + blockDim.x;
+  Real *shared_pos_z = shared_pos_y + blockDim.x;
+  #ifndef SINGLE_PARTICLE_MASS
+  Real *shared_mass = shared_pos_z + blockDim.x;
+  #endif
+
+  Real pos_x, pos_y, pos_z, mass;
+  if ( tid < n_local ){
+    pos_x = pos_x_dev[tid];
+    pos_y = pos_y_dev[tid];
+    pos_z = pos_z_dev[tid];
+  }
+  mass = particle_mass;
+
+  Real pair_force_x, pair_force_y, pair_force_z;
+  pair_force_x = 0.0;
+  pair_force_y = 0.0;
+  pair_force_z = 0.0;
+
+  Real distance_squared;
+  part_int_t n_to_compute_force = (part_int_t)(n_local / 10000);
+  for ( part_int_t tile_start = 0; tile_start < n_to_compute_force; tile_start += blockDim.x ){
+    part_int_t source_id = tile_start + threadIdx.x;
+    if ( source_id < n_local ){
+      shared_pos_x[threadIdx.x] = pos_x_dev[source_id];
+      shared_pos_y[threadIdx.x] = pos_y_dev[source_id];
+      shared_pos_z[threadIdx.x] = pos_z_dev[source_id];
+      #ifndef SINGLE_PARTICLE_MASS
+      shared_mass[threadIdx.x] = mass_dev[source_id];
+      #endif
+    }
+    __syncthreads();
+
+    part_int_t tile_size = n_to_compute_force - tile_start;
+    if ( tile_size > blockDim.x ) tile_size = blockDim.x;
+    if ( tid < n_local ){
+      for ( part_int_t i = 0; i < tile_size; i++ ){
+        if ( tile_start + i == tid ) continue;
+        Real dx = pos_x - shared_pos_x[i];
+        Real dy = pos_y - shared_pos_y[i];
+        Real dz = pos_z - shared_pos_z[i];
+        #ifdef SINGLE_PARTICLE_MASS
+        Real mass_i = mass;
+        #else
+        Real mass_i = shared_mass[i];
+        #endif
+        distance_squared = dx*dx + dy*dy + dz*dz;
+        Real inv_distance_squared = 1.0 / distance_squared;
+        pair_force_x += mass_i * dx * inv_distance_squared;
+        pair_force_y += mass_i * dy * inv_distance_squared;
+        pair_force_z += mass_i * dz * inv_distance_squared;
+      }
+    }
+    __syncthreads();
+  }
+  if ( tid < n_local ){
+    pair_forces_x_dev[tid] = pair_force_x;
+    pair_forces_y_dev[tid] = pair_force_y;
+    pair_forces_z_dev[tid] = pair_force_z;
+  }
+}
+
+void Particles_3D::Get_Pair_Forces_GPU_function( part_int_t n_local, Real particle_mass, Real *pos_x_dev, Real *pos_y_dev, Real *pos_z_dev, Real *mass_dev, Real *pair_forces_x_dev, Real *pair_forces_y_dev, Real *pair_forces_z_dev ){
+
+  int tpb_pair_forces = 256;
+  int ngrid =  (n_local + tpb_pair_forces - 1) / tpb_pair_forces;
+  // number of blocks per 1D grid
+  dim3 dim1dGrid(ngrid, 1, 1);
+  //  number of threads per 1D block
+  dim3 dim1dBlock(tpb_pair_forces, 1, 1);
+  size_t shared_mem_size = 3 * tpb_pair_forces * sizeof(Real);
+  #ifndef SINGLE_PARTICLE_MASS
+  shared_mem_size += tpb_pair_forces * sizeof(Real);
+  #endif
+  hipLaunchKernelGGL(Get_Pair_Forces_Kernel, dim1dGrid, dim1dBlock, shared_mem_size, 0,  n_local, particle_mass, pos_x_dev, pos_y_dev, pos_z_dev, mass_dev, pair_forces_x_dev, pair_forces_y_dev, pair_forces_z_dev );
+  CudaCheckError();
+}
+#endif//PARTICLES_PAIR_FORCES
 #endif //PARTICLES_GPU
 
 #ifdef GRAVITY_GPU

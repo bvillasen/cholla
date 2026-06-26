@@ -77,6 +77,11 @@ void Grid3D::Get_Gravity_CIC(){
 
   #ifdef PARTICLES_GPU
   Particles.Get_Gravity_CIC_GPU();
+
+  #ifdef PARTICLES_PAIR_FORCES
+  Particles.Get_Pair_Forces_GPU();
+  #endif//PARTICLES_PAIR_FORCES
+
   #endif
 }
 
@@ -92,6 +97,15 @@ void Particles_3D::Get_Gravity_CIC_GPU(){
 
   Get_Gravity_CIC_GPU_function( n_local, G.nx_local, G.ny_local, G.nz_local, G.n_ghost_particles_grid, G.xMin, G.xMax, G.yMin, G.yMax, G.zMin, G.zMax,  G.dx, G.dy, G.dz,  pos_x_dev, pos_y_dev, pos_z_dev, grav_x_dev,  grav_y_dev,  grav_z_dev, G.gravity_x_dev, G.gravity_y_dev, G.gravity_z_dev );
 }
+
+#ifdef PARTICLES_PAIR_FORCES
+void Particles_3D::Get_Pair_Forces_GPU(){
+  int n_iterations = 1;
+  for ( int i = 0; i < n_iterations; i++ ){
+    Get_Pair_Forces_GPU_function( n_local, particle_mass, pos_x_dev, pos_y_dev, pos_z_dev, mass_dev, pair_forces_x_dev, pair_forces_y_dev, pair_forces_z_dev );
+  }
+}
+#endif//PARTICLES_PAIR_FORCES
 
 #endif //PARTICLES_GPU
 

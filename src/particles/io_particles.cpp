@@ -354,6 +354,11 @@ void Particles_3D::Load_Particles_Data_HDF5(hid_t file_id, int nfile, struct par
   Allocate_Particles_GPU_Array_Real( &grav_x_dev, particles_array_size);
   Allocate_Particles_GPU_Array_Real( &grav_y_dev, particles_array_size);
   Allocate_Particles_GPU_Array_Real( &grav_z_dev, particles_array_size);
+  #ifdef PARTICLES_PAIR_FORCES
+  Allocate_Particles_GPU_Array_Real( &pair_forces_x_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real( &pair_forces_y_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real( &pair_forces_z_dev, particles_array_size);
+  #endif//PARTICLES_PAIR_FORCES
   n_local = n_to_load;
 
   chprintf( " Allocated GPU memory for particle data\n");

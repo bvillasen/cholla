@@ -806,6 +806,11 @@ void Particles_3D::Copy_Transfer_Particles_from_Buffer_GPU(int n_recv, Real *rec
     Extend_GPU_Array_Real( &grav_x_dev, (int) particles_array_size, new_size, false );
     Extend_GPU_Array_Real( &grav_y_dev, (int) particles_array_size, new_size, false );
     Extend_GPU_Array_Real( &grav_z_dev, (int) particles_array_size, new_size, false );
+    #ifdef PARTICLES_PAIR_FORCES
+    Extend_GPU_Array_Real( &pair_forces_x_dev, (int) particles_array_size, new_size, false );
+    Extend_GPU_Array_Real( &pair_forces_y_dev, (int) particles_array_size, new_size, false );
+    Extend_GPU_Array_Real( &pair_forces_z_dev, (int) particles_array_size, new_size, false );
+    #endif//PARTICLES_PAIR_FORCES
     particles_array_size = (part_int_t) new_size;
     ReAllocate_Memory_GPU_MPI();
   }

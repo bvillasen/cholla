@@ -400,6 +400,12 @@ void Particles_3D::Free_Memory_GPU(){
   Free_GPU_Array_Real(grav_y_dev);
   Free_GPU_Array_Real(grav_z_dev);
 
+  #ifdef PARTICLES_PAIR_FORCES
+  Free_GPU_Array_Real(pair_forces_x_dev);
+  Free_GPU_Array_Real(pair_forces_y_dev);
+  Free_GPU_Array_Real(pair_forces_z_dev);
+  #endif//PARTICLES_PAIR_FORCES
+
   #ifdef MPI_CHOLLA
   Free_GPU_Array_bool( G.transfer_particles_flags_d);
   Free_GPU_Array_int( G.transfer_particles_prefix_sum_d);

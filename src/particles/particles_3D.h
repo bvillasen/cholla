@@ -83,6 +83,11 @@ class Particles_3D
   Real *grav_y_dev;
   Real *grav_z_dev;
 
+  #ifdef PARTICLES_PAIR_FORCES
+  Real *pair_forces_x_dev;
+  Real *pair_forces_y_dev;
+  Real *pair_forces_z_dev;
+  #endif//PARTICLES_PAIR_FORCES
 
   #endif //PARTICLES_GPU
 
@@ -265,6 +270,11 @@ class Particles_3D
   #ifdef PRINT_MAX_MEMORY_USAGE
   void Print_Max_Memory_Usage();
   #endif
+  
+  #ifdef PARTICLES_PAIR_FORCES
+  void Get_Pair_Forces_GPU();
+  void Get_Pair_Forces_GPU_function( part_int_t n_local, Real particle_mass, Real *pos_x_dev, Real *pos_y_dev, Real *pos_z_dev, Real *mass_dev, Real *pair_forces_x_dev, Real *pair_forces_y_dev, Real *pair_forces_z_dev );
+  #endif//PARTICLES_PAIR_FORCES
   
   #endif //PARTICLES_GPU
 
