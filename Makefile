@@ -92,9 +92,9 @@ endif
 
 ifeq ($(findstring -DPARIS,$(DFLAGS)),-DPARIS)
   ifdef HIPCONFIG
-    CXXFLAGS += -I$(ROCM_PATH)/hipfft/include
-    GPUFLAGS += -I$(ROCM_PATH)/hipfft/include
-    LIBS += -L$(ROCM_PATH)/hipfft/lib -lhipfft
+    CXXFLAGS += -I$(ROCM_PATH)/include/hipfft
+    GPUFLAGS += -I$(ROCM_PATH)/include/hipfft
+    LIBS += -L$(ROCM_PATH)/lib/hipfft -lhipfft
   else
     LIBS += -lcufft
   endif

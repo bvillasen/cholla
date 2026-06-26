@@ -1,15 +1,17 @@
-#-- make.host for Frontier at the OLCF with
+#-- make.host for AMD Lockhart
 #-- Compiler and flags for different build type
 CXX               = CC
-GPUCXX           ?= hipcc
+#-- Pin hipcc to the rocm module loaded in setup.lockhart_mi250x.cce.sh so the
+#-- build can't silently link against a different ROCm (e.g. a rocm-7 hipcc on
+#-- PATH). The Cray MPICH GTL is built for this same ROCm, so they must match.
+GPUCXX           ?= $(ROCM_PATH)/bin/hipcc
 
 CXXFLAGS_DEBUG    = -g -O0 -std=c++17
 CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -Wno-unused-result
 
 GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result -munsafe-fp-atomics
 GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result
-HIPCONFIG	  = -I$(ROCM_PATH)/include $(shell hipconfig -C) # workaround for Rocm 5.2 warnings
-#HIPCONFIG	  = $(shell hipconfig -C)
+HIPCONFIG	  = -I$(ROCM_PATH)/include -D__HIP_PLATFORM_AMD__= -D__HIP_PLATFORM_HCC__=
 
 OMP_NUM_THREADS   = 7
 #-- How to launch job
@@ -17,8 +19,8 @@ JOB_LAUNCH        = srun -u -n 1 -c 8
 
 #-- Library
 MPI_ROOT          = ${CRAY_MPICH_DIR}
-HDF5_ROOT         =  /home/bvillase/util/hdf5/1.12.2
-FFTW_ROOT         = $(shell dirname $(FFTW_DIR))
+#HDF5_ROOT         = ${HDF5_ROOT}
+#FFTW_ROOT         = $(shell dirname $(FFTW_DIR))
 GOOGLETEST_ROOT := $(if $(GOOGLETEST_ROOT),$(GOOGLETEST_ROOT),$(OLCF_GOOGLETEST_ROOT))
 
 #-- Use GPU-aware MPI
