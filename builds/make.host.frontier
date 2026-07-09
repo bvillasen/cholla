@@ -9,7 +9,8 @@ CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -Wno-unused-result -fPIC
 
 GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result -munsafe-fp-atomics
 GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result
-HIPCONFIG	  = $(shell hipconfig -C)
+HIPCONFIG	  = -I$(ROCM_PATH)/include -D__HIP_PLATFORM_AMD__= -D__HIP_PLATFORM_HCC__=
+#HIPCONFIG	  = $(shell hipconfig -C)
 
 OMP_NUM_THREADS   = 8
 #-- How to launch job
