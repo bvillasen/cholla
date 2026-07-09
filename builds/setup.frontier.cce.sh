@@ -4,8 +4,7 @@
 #   source ./setup.frontier.cce.sh
 
 module load PrgEnv-cray
-module load cce
-module load rocm/6.4.2
+module load rocm
 module load craype-accel-amd-gfx90a
 module load cray-hdf5 cray-fftw
 
