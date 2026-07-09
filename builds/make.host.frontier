@@ -2,16 +2,13 @@
 #-- Compiler and flags for different build type
 CC                = cc
 CXX               = CC
-#GPUCXX           ?= CC -x hip
-GPUCXX           ?= hipcc
+GPUCXX           ?= $(ROCM_PATH)/bin/hipcc
 
-CFLAGS_DEBUG      = -g -O0
-CFLAGS_OPTIMIZE   = -g -O2
+CXXFLAGS_DEBUG    = -g -O0 -std=c++17 -fPIC
+CXXFLAGS_OPTIMIZE = -g -Ofast -std=c++17 -Wno-unused-result -fPIC
 
-CXXFLAGS_DEBUG    = -g -O0 -std=c++11
-CXXFLAGS_OPTIMIZE = -Ofast -std=c++11
-
-GPUFLAGS          = --offload-arch=gfx90a
+GPUFLAGS_OPTIMIZE = -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result -munsafe-fp-atomics
+GPUFLAGS_DEBUG    = -g -O0 -std=c++17 --offload-arch=gfx90a -Wall -Wno-unused-result
 HIPCONFIG	  = $(shell hipconfig -C)
 
 OMP_NUM_THREADS   = 8
