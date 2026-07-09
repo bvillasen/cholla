@@ -3,9 +3,9 @@
 #-- This script needs to be source-d in the terminal, e.g.
 #   source ./setup.frontier.cce.sh
 
-module load PrgEnv-cray/8.7.0
-module load cce/19.0.0
-module load rocm/7.2.0
+module load PrgEnv-cray
+module load cce
+module load rocm/6.4.2
 module load craype-accel-amd-gfx90a
 module load cray-hdf5 cray-fftw
 
