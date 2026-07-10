@@ -14,7 +14,7 @@ using namespace std;
 void Grid3D::Output_Skewers_File( struct parameters *P ){
   
   FILE *out;
-  char filename[180];
+  char filename[MAXLEN];
   char timestep[20];
 
   // create the filename
@@ -454,7 +454,7 @@ void Grid3D::Output_Analysis( struct parameters *P ){
   #endif
   
   FILE *out;
-  char filename[180];
+  char filename[MAXLEN];
   char timestep[20];
 
   // create the filename
@@ -662,7 +662,7 @@ void Grid3D::Write_Analysis_Data_HDF5( hid_t file_id ){
 #ifdef COSMOLOGY
 void Analysis_Module::Load_Scale_Outputs( struct parameters *P ) {
 
-  char filename_1[100];
+  char filename_1[MAXLEN];
   strcpy(filename_1, P->analysis_scale_outputs_file);
   chprintf( " Loading Analysis Scale_Factor Outpus: %s\n", filename_1);
 

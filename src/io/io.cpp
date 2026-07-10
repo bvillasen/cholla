@@ -231,7 +231,7 @@ void OutputData(Grid3D &G, struct parameters P, int nfile)
 /* Output a projection of the grid data to file. */
 void OutputProjectedData(Grid3D &G, struct parameters P, int nfile)
 {
-  char filename[100];
+  char filename[MAXLEN];
   char timestep[20];
   #ifdef HDF5
   hid_t   file_id;
@@ -274,7 +274,7 @@ void OutputProjectedData(Grid3D &G, struct parameters P, int nfile)
 /* Output a rotated projection of the grid data to file. */
 void OutputRotatedProjectedData(Grid3D &G, struct parameters P, int nfile)
 {
-  char filename[100];
+  char filename[MAXLEN];
   char timestep[20];
   #ifdef HDF5
   hid_t   file_id;
@@ -295,7 +295,7 @@ void OutputRotatedProjectedData(Grid3D &G, struct parameters P, int nfile)
     //if flag_delta==1, then we are just outputting a
     //bunch of rotations of the same snapshot
     int i_delta;
-    char fname[200];
+    char fname[MAXLEN];
 
     for(i_delta=0;i_delta<G.R.n_delta;i_delta++)
     {
@@ -377,7 +377,7 @@ void OutputRotatedProjectedData(Grid3D &G, struct parameters P, int nfile)
 /* Output xy, xz, and yz slices of the grid data. */
 void OutputSlices(Grid3D &G, struct parameters P, int nfile)
 {
-  char filename[100];
+  char filename[MAXLEN];
   char timestep[20];
   #ifdef HDF5
   hid_t   file_id;
@@ -2511,7 +2511,7 @@ void Grid3D::Write_Slices_HDF5(hid_t file_id)
  *  \brief Read in grid data from an output file. */
 void Grid3D::Read_Grid(struct parameters P) {
 
-  char filename[100];
+  char filename[MAXLEN];
   char timestep[20];
   int nfile = P.nfile; //output step you want to read from
 

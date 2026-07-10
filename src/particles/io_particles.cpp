@@ -21,10 +21,10 @@
 
 
 void Particles_3D::Load_Particles_Data( struct parameters *P){
-  char filename[100];
+  char filename[MAXLEN];
   char timestep[20];
   int nfile = P->nfile; //output step you want to read from
-  char filename_counter[100];
+  char filename_counter[MAXLEN];
   // create the filename to read from
 
   strcpy(filename, P->indir);
