@@ -1,7 +1,7 @@
 #-- make.host for AMD Lockhart
 #-- Compiler and flags for different build type
-CC                = ${OMPI_DIR}/bin/mpicc
-CXX               = ${OMPI_DIR}/bin/mpicxx
+CC                = ${OMPI_ROOT}/bin/mpicc
+CXX               = ${OMPI_ROOT}/bin/mpicxx
 GPUCXX           ?= ${ROCM_PATH}/bin/hipcc
 
 CXXFLAGS_DEBUG    = -g -O0 -std=c++17
@@ -17,9 +17,9 @@ OMP_NUM_THREADS   = 16
 JOB_LAUNCH        = srun -u -n 1 -c 8
 
 #-- Library
-MPI_ROOT          = ${OMPI_DIR}
+MPI_ROOT          = ${OMPI_ROOT}
 HDF5_ROOT         = ${HOME}/util/hdf5/v1.12.2/install
-ROCM_PATH         = /opt/rocm-7.2.3
+#ROCM_PATH         = /opt/rocm-7.2.3
 CFLAGS_OPTIMIZE   += -I$(MPI_ROOT)/include
 CXXFLAGS_OPTIMIZE += -I$(MPI_ROOT)/include -I$(ROCM_PATH)/include
 
