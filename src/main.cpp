@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
     if (P.output_always) G.H.Output_Now = true;
     
     #ifdef OMNISTAT_FOM
-    double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
+    double fom_value = static_cast<double>(G.H.nx_total * G.H.ny_total * G.H.nz_total) / (stop_step - start_step);
     if (procID == 0) {
       std::string fom_cmd = "curl -s -X POST http://localhost:8001/fom "
                   "-H \"Content-Type: application/json\" "
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
         // Write FOM data to file
         std::chrono::high_resolution_clock::time_point current_time;
         int64_t timestamp = get_nanoseconds_stamp(current_time);
-        double fom_value = static_cast<double>(G.H.nx_real * G.H.ny_real * G.H.nz_real) / (stop_step - start_step);
+        double fom_value = static_cast<double>(G.H.nx_total * G.H.ny_total * G.H.nz_total) / (stop_step - start_step);
         if (fom_file != nullptr) {
           fprintf(fom_file, "%d %ld %e\n", G.H.n_step, timestamp, fom_value);
           fflush(fom_file);
@@ -457,7 +457,7 @@ int main(int argc, char *argv[])
 
   double stop_simulation = Get_Time();
   double simulation_time = stop_simulation - start_simulation;
-  int64_t grid_size = (int64_t)G.H.nx_real * G.H.ny_real * G.H.nz_real;
+  int64_t grid_size = (int64_t)G.H.nx_total * G.H.ny_total * G.H.nz_total;
   int64_t n_steps = G.H.n_step;
   double fom = (double) grid_size * n_steps / simulation_time;
   chprintf("Simulation time: %f secs\n", simulation_time );
