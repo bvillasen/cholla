@@ -112,6 +112,7 @@ ifeq ($(findstring -DHDF5,$(DFLAGS)),-DHDF5)
 endif
 
 ifeq ($(findstring -DMPI_CHOLLA,$(DFLAGS)),-DMPI_CHOLLA)
+  DFLAGS += -DMPI_CHOLLA
   GPUFLAGS += -I$(MPI_ROOT)/include
   ifdef HIPCONFIG
      LIBS += -L$(MPI_ROOT)/lib -lmpi
